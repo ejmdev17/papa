@@ -10,16 +10,16 @@ defmodule Papa.Visits do
   alias Papa.Accounts
 
   @type visit_request_error ::
-          :user_is_not_a_member |
-          :member_not_enough_minutes |
-          :must_be_a_future_date
+          :user_is_not_a_member
+          | :member_not_enough_minutes
+          | :must_be_a_future_date
 
   @doc """
   Requests a visit from a member.
   """
   @spec request_visit(integer(), Date.t(), integer()) ::
-          {:ok, Visit.t()} |
-          {:error, visit_request_error() | :not_found | Ecto.Changeset.t()}
+          {:ok, Visit.t()}
+          | {:error, visit_request_error() | :not_found | Ecto.Changeset.t()}
   def request_visit(member_id, date, minutes) do
     with {:ok, member} <- Accounts.get_member(member_id),
          {:ok, visit} <- schedule_visit(member, date, minutes) do
@@ -52,19 +52,19 @@ defmodule Papa.Visits do
   end
 
   @type visit_cancellation_error ::
-          :visit_not_found |
-          :visit_not_pending
+          :visit_not_found
+          | :visit_not_pending
   @doc """
   Cancels a visit, returns requested minutes to the member.
   """
   @spec cancel_visit(integer()) ::
-          {:ok, Visit.t()} |
-          {:error, visit_cancellation_error() | Ecto.Changeset.t()}
+          {:ok, Visit.t()}
+          | {:error, visit_cancellation_error() | Ecto.Changeset.t()}
   def cancel_visit(visit_id) do
     with {:ok, %{status: "pending"} = visit} <- get_visit(visit_id),
          {:ok, member} <- Accounts.get_member(visit.member_id) do
       Repo.transact(fn ->
-       {:ok, visit} = update_visit(visit, %{status: "cancelled"})
+        {:ok, visit} = update_visit(visit, %{status: "cancelled"})
         Accounts.update_user(member, %{minutes: member.minutes + visit.minutes})
         {:ok, visit}
       end)
@@ -76,16 +76,16 @@ defmodule Papa.Visits do
   end
 
   @type visit_fulfillment_error ::
-          :user_is_not_a_pal |
-          :visit_not_pending |
-          :pal_is_member
+          :user_is_not_a_pal
+          | :visit_not_pending
+          | :pal_is_member
 
   @doc """
   Fulfills a visit.  Transfers 85% of the visit minutes to the PAL, 15% is kept by the system.
   """
   @spec fulfill_visit(integer(), integer()) ::
-          {:ok, Visit.t()} |
-          {:error, visit_fulfillment_error() | Ecto.Changeset.t()}
+          {:ok, Visit.t()}
+          | {:error, visit_fulfillment_error() | Ecto.Changeset.t()}
   def fulfill_visit(pal_id, visit_id) do
     with {:ok, pal} <- Accounts.get_pal(pal_id),
          {:ok, visit} <- get_visit(visit_id) do

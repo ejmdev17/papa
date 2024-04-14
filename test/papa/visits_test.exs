@@ -81,7 +81,6 @@ defmodule Papa.VisitsTest do
     end
 
     test "successful visit fulfillment", %{pal: pal, visit: visit} do
-
       {:ok, visit} = Visits.fulfill_visit(pal.id, visit.id)
       assert visit.status == "completed"
       assert visit.pal_id == pal.id
