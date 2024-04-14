@@ -17,5 +17,6 @@ defmodule Papa.Visits.Visit do
     visit
     |> cast(attrs, [:member_id, :pal_id, :date, :minutes, :status])
     |> validate_required([:member_id, :date, :minutes, :status])
+    |> validate_number(:minutes, greater_than_or_equal_to: 0)
   end
 end

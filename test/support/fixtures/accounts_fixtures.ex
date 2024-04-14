@@ -11,7 +11,7 @@ defmodule Papa.AccountsFixtures do
     {:ok, user} =
       attrs
       |> Enum.into(%{
-        email: "some email",
+        email: "john.doe@example.org",
         first_name: "some first_name",
         is_member: true,
         is_pal: true,

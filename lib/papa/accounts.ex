@@ -9,6 +9,28 @@ defmodule Papa.Accounts do
   alias Papa.Accounts.User
 
   @doc """
+  Get a member by id.
+  """
+  @spec get_member(id :: integer) :: {:ok, User.t()} | {:error, :member_not_found}
+  def get_member(id) do
+    case Repo.get_by(User, id: id, is_member: true) do
+      nil -> {:error, :member_not_found}
+      member -> {:ok, member}
+    end
+  end
+
+  @doc """
+  Get a pal by id.
+  """
+  @spec get_pal(id :: integer) :: {:ok, User.t()} | {:error, :pal_not_found}
+  def get_pal(id) do
+    case Repo.get_by(User, id: id, is_pal: true) do
+      nil -> {:error, :pal_not_found}
+      pal -> {:ok, pal}
+    end
+  end
+
+  @doc """
   Returns the list of user.
 
   ## Examples

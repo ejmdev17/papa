@@ -18,5 +18,7 @@ defmodule Papa.Accounts.User do
     user
     |> cast(attrs, [:first_name, :last_name, :email, :is_member, :is_pal, :minutes])
     |> validate_required([:first_name, :last_name, :email, :is_member, :is_pal, :minutes])
+    |> validate_format(:email, ~r/^[A-Za-z0-9._%+-+']+@[A-Za-z0-9.-]+\.[A-Za-z]+$/)
+    |> validate_number(:minutes, greater_than_or_equal_to: 0)
   end
 end
